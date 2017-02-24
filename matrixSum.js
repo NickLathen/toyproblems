@@ -44,7 +44,7 @@ function findMatrixSum(board) {
   var sum = sumOfSelection(colSelection, board);
   let noSwaps = false;
   while(!noSwaps) {
-    printSelection(colSelection);
+    // printSelection(colSelection);
     noSwaps = true;
     for (let primaryRow = 0; primaryRow < n - 1 && noSwaps; primaryRow++) {
       for (let secondaryRow = primaryRow + 1; secondaryRow < n && noSwaps; secondaryRow++) {
@@ -107,14 +107,27 @@ var board2 = [[7,  53, 183, 439, 863, 497, 383, 563,  79, 973, 287,  63, 343, 16
 [815, 559, 813, 459, 522, 788, 168, 586, 966, 232, 308, 833, 251, 631, 107],
 [813, 883, 451, 509, 615,  77, 281, 613, 459, 205, 380, 274, 302,  35, 805]]
 
+function shuffle(array) {
+  let i = 0;
+  let j = 0;
+  let temp = null;
+
+  for (i = array.length - 1; i > 0; i -= 1) {
+    j = Math.floor(Math.random() * (i + 1))
+    temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+};
+
 var answerBoard2 = 13938;
-// const t0 = performance.now();
-// for (var i = 0; i < 100; i++) {
-//   board2.push(board2.shift());
-//   findMatrixSum(board2);
-// };
-// const t1 = performance.now();
-// console.log(t1-t0);
+const t0 = performance.now();
+for (var i = 0; i < 100; i++) {
+  console.log(findMatrixSum(shuffle(board2)));
+};
+const t1 = performance.now();
+console.log(t1-t0);
 
 console.log(findMatrixSum(board2));
 // console.log(findMatrixSum(board2.reverse()));
