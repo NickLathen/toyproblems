@@ -38,7 +38,7 @@ function printSelection(selection) {
   console.log(output);
 }
 
-function permutate(group) {
+function nextPermutation(group) {
   const n = group.length;
   if (group[n - 1] < group[n - 2]){
     return null;//this group has no more permutations
@@ -59,7 +59,7 @@ function nextGroup(group, boardSize) {
     const currentDigit = group[i];
     if (i === 0 && currentDigit === boardSize - groupSize + 1) {
       return null;//this is the last group for this boardSize
-    } else if (currentDigit < boardSize - ((groupSize - 1) - i)) {
+    } else if (currentDigit < (boardSize - 1) - ((groupSize - 1) - i)) {
       group[i]++
       for (let writeIndex = i + 1; writeIndex < groupSize; writeIndex++) {
         group[writeIndex] = group[writeIndex - 1] + 1; 
@@ -69,20 +69,65 @@ function nextGroup(group, boardSize) {
   }
 }
 
+function sumOfGroup(group, board, selection) {
+  let sum = 0;
+  group.forEach(function(row) {
+    sum += board[row][selection[row]];
+  });
+  return sum;
+}
+
+function sumOfPermutation(permutation, group, board, selection) {
+  let sum = 0;
+  group.forEach(function(row, i) {
+    const rowForSelection = permutation[i];
+    sum += board[row][selection[rowForSelection]];
+  });
+  return sum;
+}
+
+function permutateSelection(permutation, group, selection) {
+  const selectionCopy = JSON.parse(JSON.stringify(selection));
+  group.forEach(function(row, i) {
+    const rowForSelection = permutation[i];
+    selectionCopy[row] = selection[rowForSelection];
+  });
+  return selectionCopy;
+}
+
+function test(groupSize, n) {
+  const data = {groups: []};
+  for (let group = [...Array(groupSize).keys()]; group; group = nextGroup(group, n)) {
+    console.log(group.toString());
+    for (let permutation = nextPermutation(group); permutation; permutation = nextPermutation(permutation)) {
+      console.log(permutation.toString());
+    }
+  }
+}
+
 function findMatrixSum(board) {
   const n = board.length;
   let columnSelection = [...Array(n).keys()];
   var sum = sumOfSelection(columnSelection, board);
-  for (let groupSize = 2; groupSize < 5; groupSize++) {
-    let noSwaps = false;
-    while (!noSwaps){
-      for (let group = [...Array(groupSize).keys()]; group; group = nextGroup(group, n)) {
-        for (let permutation = permutate(currentGroup); permutation; permutation = permutate(permutation)) {
-          
+  let noSwaps = false;
+  while (!noSwaps){
+    noSwaps = true;
+    for (let groupSize = 2; groupSize <= n - 1 && noSwaps; groupSize++) {
+      for (let group = [...Array(groupSize).keys()]; group && noSwaps; group = nextGroup(group, n)) {
+        const groupSum = sumOfGroup(group, board, columnSelection);
+        for (let permutation = nextPermutation(group); permutation && noSwaps; permutation = nextPermutation(permutation)) {
+          const permutationSum = sumOfPermutation(permutation, group, board, columnSelection);
+          const difference = permutationSum - groupSum;
+          if(difference > 0) {
+            noSwaps = false;
+            columnSelection = permutateSelection(permutation, group, columnSelection);
+            sum += difference; 
+          }
         }   
       }
     }
   }
+  return sum;
 };
 
 //this solution can't get swaps of 4,5,6,7,8,9 etc...
@@ -171,7 +216,7 @@ function shuffle(array) {
 
 var answerBoard2 = 13938;
 const t0 = performance.now();
-for (var i = 0; i < 100; i++) {
+for (var i = 0; i < 500; i++) {
   console.log(findMatrixSum(shuffle(board2)));
 };
 const t1 = performance.now();
