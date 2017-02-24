@@ -38,7 +38,41 @@ function printSelection(selection) {
   console.log(output);
 }
 
+function permutate(group) {
+  const n = group.length;
+  if (group[n - 1] < group[n - 2]){
+    return null;//this group has no more permutations
+  } else {
+    return group.map((x, i) => {
+      if (i === 0) {
+        return group[n - 1];
+      } else {
+        return group[i - 1];
+      }
+    });
+  }
+};
+
 function findMatrixSum(board) {
+  const n = board.length;
+  let columnSelection = [...Array(n).keys()];
+  var sum = sumOfSelection(columnSelection, board);
+  for (let groupSize = 2; groupSize < 5; groupSize++) {
+    let noSwaps = false;
+    while (!noSwaps){
+      const group = [...Array(groupSize).keys()];
+      const permutation = permutate(currentGroup);
+      while (currentGroup) {
+        for (let permutation = permutate(currentGroup); permutation; permutation = permutate(permutation)) {
+          
+        }   
+      }
+    }
+  }
+};
+
+//this solution can't get swaps of 4,5,6,7,8,9 etc...
+function findMatrixSumIncomplete(board) {
   const n = board.length;
   let colSelection = [...Array(n).keys()];
   var sum = sumOfSelection(colSelection, board);
