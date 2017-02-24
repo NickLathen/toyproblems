@@ -112,7 +112,7 @@ function findMatrixSum(board) {
   let noSwaps = false;
   while (!noSwaps){
     noSwaps = true;
-    for (let groupSize = 2; groupSize <= n - 1 && noSwaps; groupSize++) {
+    for (let groupSize = 2; groupSize <= n && noSwaps; groupSize++) {
       for (let group = [...Array(groupSize).keys()]; group && noSwaps; group = nextGroup(group, n)) {
         const groupSum = sumOfGroup(group, board, columnSelection);
         for (let permutation = nextPermutation(group); permutation && noSwaps; permutation = nextPermutation(permutation)) {
@@ -216,7 +216,7 @@ function shuffle(array) {
 
 var answerBoard2 = 13938;
 const t0 = performance.now();
-for (var i = 0; i < 500; i++) {
+for (var i = 0; i < 1000; i++) {
   console.log(findMatrixSum(shuffle(board2)));
 };
 const t1 = performance.now();
