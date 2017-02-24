@@ -22,39 +22,57 @@ function sumOfSelection (selection, board) {
   return sum;
 }
 
+function printSelection(selection) {
+  let output = '';
+  const n = selection.length;
+  selection.forEach(function(selectedColumn) {
+    for (let printColumn = 0; printColumn < n; printColumn++) {
+      if (printColumn === selectedColumn) {
+        output += 'X';
+      } else {
+        output += ' ';
+      }
+    }
+    output += '\n';
+  });
+  console.log(output);
+}
+
 function findMatrixSum(board) {
   const n = board.length;
   let colSelection = [...Array(n).keys()];
   var sum = sumOfSelection(colSelection, board);
   let noSwaps = false;
   while(!noSwaps) {
+    printSelection(colSelection);
     noSwaps = true;
     for (let primaryRow = 0; primaryRow < n - 1 && noSwaps; primaryRow++) {
       for (let secondaryRow = primaryRow + 1; secondaryRow < n && noSwaps; secondaryRow++) {
-        const currSumOfRows = board[primaryRow][colSelection[primaryRow]] + board[secondaryRow][colSelection[secondaryRow]];
+        const currSumOfTwoRows = board[primaryRow][colSelection[primaryRow]] + board[secondaryRow][colSelection[secondaryRow]];
         const swapSumOfRows = board[primaryRow][colSelection[secondaryRow]] + board[secondaryRow][colSelection[primaryRow]];
-        const swapDifference = swapSumOfRows - currSumOfRows;
+        const swapDifference = swapSumOfRows - currSumOfTwoRows;
         if (swapDifference > 0) {
           noSwaps = false;
           colSelection = swapElementsInArray(colSelection, primaryRow, secondaryRow);
           sum += swapDifference;
-        }
-        for (let tertiaryRow = secondaryRow + 1; tertiaryRow < n && noSwaps; tertiaryRow++) {
-          const currSumOfThreeRows = board[primaryRow][colSelection[primaryRow]] + board[secondaryRow][colSelection[secondaryRow]] + board[tertiaryRow][colSelection[tertiaryRow]];
-          const oneShiftSumOfRows = board[primaryRow][colSelection[tertiaryRow]] + board[secondaryRow][colSelection[primaryRow]] + board[tertiaryRow][colSelection[secondaryRow]];
-          const twoShiftSumOfRows = board[primaryRow][colSelection[secondaryRow]] + board[secondaryRow][colSelection[tertiaryRow]] + board[tertiaryRow][colSelection[primaryRow]];
-          const oneShiftDifference = oneShiftSumOfRows - currSumOfThreeRows;
-          const twoShiftDifference = twoShiftSumOfRows - currSumOfThreeRows;
-          if (oneShiftDifference > 0) {
-            noSwaps = false;
-            colSelection = swapElementsInArray(colSelection, primaryRow, tertiaryRow);
-            colSelection = swapElementsInArray(colSelection, secondaryRow, tertiaryRow);
-            sum += oneShiftDifference;
-          } else if(twoShiftDifference > 0) {
-            noSwaps = false;
-            colSelection = swapElementsInArray(colSelection, primaryRow, secondaryRow);
-            colSelection = swapElementsInArray(colSelection, secondaryRow, tertiaryRow);
-            sum += twoShiftDifference;
+        } else {
+          for (let tertiaryRow = secondaryRow + 1; tertiaryRow < n && noSwaps; tertiaryRow++) {
+            const currSumOfThreeRows = currSumOfTwoRows + board[tertiaryRow][colSelection[tertiaryRow]];
+            const oneShiftSumOfRows = board[primaryRow][colSelection[tertiaryRow]] + board[secondaryRow][colSelection[primaryRow]] + board[tertiaryRow][colSelection[secondaryRow]];
+            const twoShiftSumOfRows = board[primaryRow][colSelection[secondaryRow]] + board[secondaryRow][colSelection[tertiaryRow]] + board[tertiaryRow][colSelection[primaryRow]];
+            const oneShiftDifference = oneShiftSumOfRows - currSumOfThreeRows;
+            const twoShiftDifference = twoShiftSumOfRows - currSumOfThreeRows;
+            if (oneShiftDifference > 0) {
+              noSwaps = false;
+              colSelection = swapElementsInArray(colSelection, primaryRow, tertiaryRow);
+              colSelection = swapElementsInArray(colSelection, secondaryRow, tertiaryRow);
+              sum += oneShiftDifference;
+            } else if(twoShiftDifference > 0) {
+              noSwaps = false;
+              colSelection = swapElementsInArray(colSelection, primaryRow, secondaryRow);
+              colSelection = swapElementsInArray(colSelection, secondaryRow, tertiaryRow);
+              sum += twoShiftDifference;
+            }
           }
         }
       }
@@ -90,9 +108,13 @@ var board2 = [[7,  53, 183, 439, 863, 497, 383, 563,  79, 973, 287,  63, 343, 16
 [813, 883, 451, 509, 615,  77, 281, 613, 459, 205, 380, 274, 302,  35, 805]]
 
 var answerBoard2 = 13938;
-const t0 = performance.now();
-for (var i = 0; i < 100; i++) {
-  findMatrixSum(board2);
-};
+// const t0 = performance.now();
+// for (var i = 0; i < 100; i++) {
+//   board2.push(board2.shift());
+//   findMatrixSum(board2);
+// };
+// const t1 = performance.now();
+// console.log(t1-t0);
 
-console.log(t1-t0);
+console.log(findMatrixSum(board2));
+// console.log(findMatrixSum(board2.reverse()));
