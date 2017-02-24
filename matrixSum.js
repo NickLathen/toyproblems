@@ -53,6 +53,22 @@ function permutate(group) {
   }
 };
 
+function nextGroup(group, boardSize) {
+  const groupSize = group.length;
+  for (let i = groupSize - 1; i >= 0; i--) {
+    const currentDigit = group[i];
+    if (i === 0 && currentDigit === boardSize - groupSize + 1) {
+      return null;//this is the last group for this boardSize
+    } else if (currentDigit < boardSize - ((groupSize - 1) - i)) {
+      group[i]++
+      for (let writeIndex = i + 1; writeIndex < groupSize; writeIndex++) {
+        group[writeIndex] = group[writeIndex - 1] + 1; 
+      }
+      return group;
+    }
+  }
+}
+
 function findMatrixSum(board) {
   const n = board.length;
   let columnSelection = [...Array(n).keys()];
@@ -60,9 +76,7 @@ function findMatrixSum(board) {
   for (let groupSize = 2; groupSize < 5; groupSize++) {
     let noSwaps = false;
     while (!noSwaps){
-      const group = [...Array(groupSize).keys()];
-      const permutation = permutate(currentGroup);
-      while (currentGroup) {
+      for (let group = [...Array(groupSize).keys()]; group; group = nextGroup(group, n)) {
         for (let permutation = permutate(currentGroup); permutation; permutation = permutate(permutation)) {
           
         }   
