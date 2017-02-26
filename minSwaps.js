@@ -8,7 +8,7 @@ function minSwaps(unsortedArray) {
   unsortedArray.forEach(function(value, index) {
     if (swapIndexes.indexOf(index) === -1) {
       var swapIndex = sortedArray.indexOf(value);
-      while (swapIndex !== index) {
+      while (swapIndex !== index && swapIndexes.indexOf(swapIndex) === -1) {
         swaps++;
         swapIndexes.push(swapIndex);
         swapIndex = sortedArray.indexOf(unsortedArray[swapIndex]);
@@ -22,14 +22,20 @@ function minSwaps(unsortedArray) {
 
 //tests
 var assert = require('assert');
+const answerTuples = [ //[input, answer]
+  [[2, 1, 4, 3, 5], 2],
+  [[3, 2, 1], 1],
+  [[5, 4, 2, 3, 1], 3],
+  [[2,1], 1],
+  [[3, 3, 2, 1], 2],
+  [[1, 1, 2, 3], 0]
+]
 describe('minSwaps', function() {
-  it('should return 2 for input [2,1,4,3,5]', function() {
-    assert.equal(minSwaps([2,1,4,3,5]), 2);
-  });
-  it('should return 1 for input [3,2,1]', function() {
-    assert.equal(minSwaps([3,2,1]), 1);
-  });
-  it('should return 3 for input [5,4,3,2,1]', function() {
-    assert.equal(minSwaps([5,4,2,3,1]), 3);
+  answerTuples.forEach(tuple => {
+    const input = tuple[0];
+    const answer = tuple[1];
+    it(`should return ${answer} for input ${input}`, function() {
+      assert.equal(minSwaps(input), answer);
+    });
   })
 });
