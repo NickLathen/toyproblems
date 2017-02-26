@@ -95,16 +95,6 @@ function permutateSelection(permutation, group, selection) {
   return selectionCopy;
 }
 
-function test(groupSize, n) {
-  const data = {groups: []};
-  for (let group = [...Array(groupSize).keys()]; group; group = nextGroup(group, n)) {
-    console.log(group.toString());
-    for (let permutation = nextPermutation(group); permutation; permutation = nextPermutation(permutation)) {
-      console.log(permutation.toString());
-    }
-  }
-}
-
 function findMatrixSum(board) {
   const n = board.length;
   let columnSelection = [...Array(n).keys()];
@@ -126,6 +116,10 @@ function findMatrixSum(board) {
         }   
       }
     }
+  }
+  if (sum < 13938) {
+    console.log(JSON.stringify(board.map(row => JSON.stringify(row))));
+    console.log(columnSelection);
   }
   return sum;
 };
